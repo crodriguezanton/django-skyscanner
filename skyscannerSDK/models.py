@@ -181,5 +181,5 @@ class PricingOption(models.Model):
     itinerary = models.ForeignKey(Itinerary)
     price = models.FloatField()
     agents = models.ManyToManyField(Agent)
-    deeplink = models.URLField()
+    deeplink = models.URLField(max_length=2000)
     quote_age_in_min = models.IntegerField(default=1)
