@@ -1,1 +1,1 @@
-Django Skyscanner
+#Django Skyscanner SDK
