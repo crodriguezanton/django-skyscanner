@@ -1,0 +1,4 @@
+include LICENSE
+include README.md
+recursive-include skyscannerSDK/static *
+recursive-include skyscannerSDK/templates *
