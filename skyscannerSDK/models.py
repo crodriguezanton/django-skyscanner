@@ -39,7 +39,7 @@ class Place(models.Model):
         places=Place.objects.filter(name=self.name.split()[0], type__name='City')
         if places.count() == 1:
             return places.first()
-        return Place.objects.filter(name=' '.join(self.name.split()[:2]), type__name='City')
+        return Place.objects.filter(name=' '.join(self.name.split()[:2]), type__name='City').first()
 
 
 class Carrier(models.Model):
