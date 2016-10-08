@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.db.models import Min, Avg
 from django.utils.translation import ugettext as _
 from django_extensions.db.models import TimeStampedModel
 
@@ -31,6 +32,12 @@ class Place(models.Model):
 
     def __unicode__(self):
         return self.code + ": " + self.name + ' (' + self.type.__unicode__() + ')'
+
+    def get_city(self):
+        if self.type.name == 'City':
+            return self
+        elif self.parentId != 1:
+            return Place.objects.get(pk=self.parentId)
 
 
 class Carrier(models.Model):
@@ -157,6 +164,27 @@ class FlightSearch(TimeStampedModel):
 
     def __unicode__(self):
         return self.origin + '-' + self.destination + ' (' + self.outbound.strftime('%Y-%m-%d') + "-" + self.inbound.strftime('%Y-%m-%d') + ')'
+
+
+    def get_origin_city(self):
+        return self.itinerary_set.first().outbound_leg.departure_place.get_city()
+
+
+    def get_destination_city(self):
+        return self.itinerary_set.first().outbound_leg.arrival_place.get_city()
+
+    def get_min_price(self):
+        return self.itinerary_set.all().annotate(min_price=Min('pricingoption__price')).order_by(
+            'min_price').first()
+
+    def get_max_price(self):
+        return self.itinerary_set.all().annotate(min_price=Min('pricingoption__price')).order_by(
+            '-min_price').first()
+
+    def get_mean_price(self):
+        return \
+            self.itinerary_set.all().annotate(min_price=Min('pricingoption__price')).aggregate(Avg('min_price'))[
+                'min_price__avg']
 
 
 class Itinerary(TimeStampedModel):
