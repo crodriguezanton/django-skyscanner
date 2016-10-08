@@ -36,8 +36,7 @@ class Place(models.Model):
     def get_city(self):
         if self.type.name == 'City':
             return self
-        elif self.parentId != 1:
-            return Place.objects.get(pk=self.parentId)
+        return Place.objects.filter(name=self.name.partition(' ')[0], type__name='City').first()
 
 
 class Carrier(models.Model):
