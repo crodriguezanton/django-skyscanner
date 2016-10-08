@@ -36,10 +36,10 @@ class Place(models.Model):
     def get_city(self):
         if self.type.name == 'City':
             return self
-        places=Place.objects.filter(name=self.name.partition(' ')[0], type__name='City')
+        places=Place.objects.filter(name=self.name.split()[0], type__name='City')
         if places.count() == 1:
             return places.first()
-        return Place.objects.filter(name=self.name.partition(' ')[0] + ' ' + self.name.partition(' ')[1], type__name='City')
+        return Place.objects.filter(name=' '.join(self.name.split()[:2]), type__name='City')
 
 
 class Carrier(models.Model):
