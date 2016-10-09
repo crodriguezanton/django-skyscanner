@@ -213,3 +213,6 @@ class PricingOption(models.Model):
     agents = models.ManyToManyField(Agent)
     deeplink = models.URLField(max_length=2000)
     quote_age_in_min = models.IntegerField(default=1)
+
+    def get_agent(self):
+        return self.agents.first()
