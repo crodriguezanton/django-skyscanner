@@ -215,4 +215,4 @@ class PricingOption(models.Model):
     quote_age_in_min = models.IntegerField(default=1)
 
     def get_agent(self):
-        return self.agents.first()
+        return self.agents.all().first().name
