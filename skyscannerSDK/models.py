@@ -62,8 +62,8 @@ class Carrier(models.Model):
     def get_color(self):
         file = cStringIO.StringIO(urllib.urlopen(self.image).read())
         img = Image.open(file)
-        pix = img.load()
-        r, g, b, a = pix[0, 0]
+        pix = img.convert().load()
+        r, g, b = pix[0, 0]
         return '#{:02x}{:02x}{:02x}'.format(r, g, b)
 
 
@@ -160,8 +160,8 @@ class Agent(models.Model):
     def get_color(self):
         file = cStringIO.StringIO(urllib.urlopen(self.image).read())
         img = Image.open(file)
-        pix = img.load()
-        r,g,b,a = pix[0,0]
+        pix = img.convert().load()
+        r, g, b = pix[0, 0]
         return '#{:02x}{:02x}{:02x}'.format(r, g, b)
 
 
