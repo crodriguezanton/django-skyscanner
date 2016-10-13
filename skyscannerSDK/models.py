@@ -66,7 +66,8 @@ class Carrier(models.Model):
         return pix[0, 0]
 
     def get_hex_color(self):
-        return '#{:02x}{:02x}{:02x}'.format(self.get_color())
+        r,b,g = self.get_color()
+        return '#{:02x}{:02x}{:02x}'.format(r, b, g)
 
     def get_text_color(self, default='black'):
         r, g, b = self.get_color()
@@ -173,7 +174,8 @@ class Agent(models.Model):
         return pix[0, 0]
 
     def get_hex_color(self):
-        return '#{:02x}{:02x}{:02x}'.format(self.get_color())
+        r, b, g = self.get_color()
+        return '#{:02x}{:02x}{:02x}'.format(r, b, g)
 
     def get_text_color(self, default='black'):
         r,g,b = self.get_color()
