@@ -1,9 +1,12 @@
+import urllib
 import uuid
 
+import cStringIO
 from django.db import models
 from django.db.models import Min, Avg
 from django.utils.translation import ugettext as _
 from django_extensions.db.models import TimeStampedModel
+from PIL import Image
 
 from constants import DIRECTIONALITY_CHOICES
 
@@ -55,6 +58,13 @@ class Carrier(models.Model):
 
     def __unicode__(self):
         return self.display_code + ": " + self.name
+
+    def get_color(self):
+        file = cStringIO.StringIO(urllib.urlopen(self.image).read())
+        img = Image.open(file)
+        pix = img.load()
+        r, g, b, a = pix[0, 0]
+        return '#{:02x}{:02x}{:02x}'.format(r, g, b)
 
 
 class JourneyMode(models.Model):
@@ -146,6 +156,14 @@ class Agent(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def get_color(self):
+        file = cStringIO.StringIO(urllib.urlopen(self.image).read())
+        img = Image.open(file)
+        pix = img.load()
+        r,g,b,a = pix[0,0]
+        return '#{:02x}{:02x}{:02x}'.format(r, g, b)
+
 
 
 class FlightSearch(TimeStampedModel):
