@@ -161,8 +161,17 @@ class Agent(models.Model):
         file = cStringIO.StringIO(urllib.urlopen(self.image).read())
         img = Image.open(file)
         pix = img.convert().load()
-        r, g, b = pix[0, 0]
-        return '#{:02x}{:02x}{:02x}'.format(r, g, b)
+        return pix[0, 0]
+
+    def get_hex_color(self):
+        return '#{:02x}{:02x}{:02x}'.format(self.get_color())
+
+    def get_text_color(self, default='black'):
+        r,g,b = self.get_color()
+        if (r*0.299 + g+0.587 + b*0.114) > 186:
+            return default
+        else:
+            return 'white'
 
 
 
