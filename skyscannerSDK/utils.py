@@ -2,7 +2,7 @@ from django.utils.dateparse import parse_datetime
 from pytz import UTC
 from skyscanner.skyscanner import Flights
 
-from constants import API_KEY, MARKET, CURRENCY, LOCALE
+from constants import API_KEY, MARKET, CURRENCY, LOCALE, LOCATION_SCHEMA
 from skyscannerSDK.models import Place, PlaceType, FlightSearch, Carrier, Agent, AgentType, Leg, JourneyMode, Segment, \
     Itinerary, PricingOption
 
@@ -13,6 +13,7 @@ def search_flights(origin, destination, outbound, inbound, passengers):
         country=MARKET,
         currency=CURRENCY,
         locale=LOCALE,
+        locationschema=LOCATION_SCHEMA,
         originplace=origin,
         destinationplace=destination,
         outbounddate=outbound.strftime('%Y-%m-%d'),
