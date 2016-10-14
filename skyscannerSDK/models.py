@@ -69,7 +69,7 @@ class Carrier(models.Model):
         r, b, g = self.get_color()
         color = '#{:02x}{:02x}{:02x}'.format(r, b, g)
         if color == '#ffffff':
-            return '#3f51b5'
+            return '#ed145b'
         return color
 
     def get_text_color(self, default='black'):
@@ -184,7 +184,7 @@ class Agent(models.Model):
         r, b, g = self.get_color()
         color = '#{:02x}{:02x}{:02x}'.format(r, b, g)
         if color == '#ffffff':
-            return '#3f51b5'
+            return '#ed145b'
         return color
 
     def get_text_color(self, default='black'):
