@@ -69,7 +69,7 @@ class Carrier(models.Model):
         r, b, g = self.get_color()
         color = '#{:02x}{:02x}{:02x}'.format(r, b, g)
         if color == '#ffffff':
-            return '#757575'
+            return '#3f51b5'
         return color
 
     def get_text_color(self, default='black'):
@@ -133,14 +133,18 @@ class Leg(models.Model):
     segments = models.ManyToManyField(Segment)
 
     def __unicode__(self):
-        ucode = self.departure_place.code + " - " + self.arrival_place.code
+        ucode = self.departure_place.code + " - " + self.arrival_place.code + " (" + self.print_stops() + ")"
+        return ucode
+
+    def print_stops(self):
+        ucode = ""
         if self.stops.count() != 0:
-            ucode += " (" + _("Via") + ":"
+            ucode +=  _("Via") + ":"
             for stop in self.stops.all():
                 ucode += " " + stop.code
-            ucode += ")"
         else:
-            ucode += " (" + _("Direct") + ")"
+            ucode = _("Direct")
+
         return ucode
 
 
@@ -180,7 +184,7 @@ class Agent(models.Model):
         r, b, g = self.get_color()
         color = '#{:02x}{:02x}{:02x}'.format(r, b, g)
         if color == '#ffffff':
-            return '#757575'
+            return '#3f51b5'
         return color
 
     def get_text_color(self, default='black'):
