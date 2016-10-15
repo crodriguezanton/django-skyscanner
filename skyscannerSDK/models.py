@@ -66,15 +66,15 @@ class Carrier(models.Model):
         return pix[0, 0]
 
     def get_hex_color(self):
-        r, b, g = self.get_color()
-        color = '#{:02x}{:02x}{:02x}'.format(r, b, g)
-        if color == '#ffffff':
+        color = self.get_color()
+        hexcolor = '#{:02x}{:02x}{:02x}'.format(color[0], color[1], color[2])
+        if hexcolor == '#ffffff' or color.__len__() != 3:
             return '#ed145b'
-        return color
+        return hexcolor
 
     def get_text_color(self, default='black'):
-        r, g, b = self.get_color()
-        if (r * 0.299 + g + 0.587 + b * 0.114) > 186:
+        rgb = self.get_color()
+        if (rgb[0] * 0.299 + rgb[1] + 0.587 + rgb[2] * 0.114) > 186:
             return default
         else:
             return 'white'
