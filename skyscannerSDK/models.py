@@ -35,8 +35,9 @@ class Place(models.Model):
     name = models.CharField(max_length=200)
     type = models.ForeignKey(PlaceType)
     parentId = models.IntegerField(default=1)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
+    placeId = models.CharField(max_length=200, null=True, blank=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
 
     def __unicode__(self):
         return self.code + ": " + self.name + ' (' + self.type.__unicode__() + ')'
@@ -49,15 +50,24 @@ class Place(models.Model):
             return places.first()
         return Place.objects.filter(name=' '.join(self.name.split()[:2]), type__name='City').first()
 
-    def get_coordinates(self):
-        r = requests.post('https://maps.googleapis.com/maps/api/geocode/json?address='+self.name.replace(' ', '+')+'&key='+settings.GOOGLE_API_KEY)
-        coordinates = r.json()['results'][0]['geometry']['location']
-        return coordinates
+    def get_google_request(self):
+        return requests.post('https://maps.googleapis.com/maps/api/geocode/json?address='+self.name.replace(' ', '+')+'&key='+settings.GOOGLE_API_KEY)
 
-    def update_coordinates(self):
-        coordinates = self.get_coordinates()
+    @staticmethod
+    def get_coordinates(request):
+        return request.json()['results'][0]['geometry']['location']
+
+    @staticmethod
+    def get_place_id(request):
+        return request.json()['results'][0]['place_id']
+
+    def update_google_fields(self):
+        r = self.get_google_request()
+        coordinates = self.get_coordinates(r)
+        place_id = self.get_place_id(r)
         self.latitude = coordinates['lat']
         self.longitude = coordinates['lng']
+        self.placeId = place_id
         self.save()
 
 
