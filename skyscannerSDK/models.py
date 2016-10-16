@@ -38,6 +38,7 @@ class Place(models.Model):
     placeId = models.CharField(max_length=200, null=True, blank=True)
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    photo = models.URLField(null=True, blank=True)
 
     def __unicode__(self):
         return self.code + ": " + self.name + ' (' + self.type.__unicode__() + ')'
@@ -61,6 +62,19 @@ class Place(models.Model):
     def get_place_id(request):
         return request.json()['results'][0]['place_id']
 
+    @staticmethod
+    def get_photo(placeId):
+
+        r = requests.post(
+            'https://maps.googleapis.com/maps/api/place/details/json?placeid=' + placeId + '&key=' + settings.GOOGLE_API_KEY)
+
+        ref = r.json()['result']['photos'][0]['photo_reference']
+
+        photo = requests.post(
+            'https://maps.googleapis.com/maps/api/place/photo?photoreference=' + ref + '&maxwidth=3000&key=' + settings.GOOGLE_API_KEY)
+
+        return photo.url
+
     def update_google_fields(self):
         r = self.get_google_request()
         coordinates = self.get_coordinates(r)
@@ -68,6 +82,7 @@ class Place(models.Model):
         self.latitude = coordinates['lat']
         self.longitude = coordinates['lng']
         self.placeId = place_id
+        self.photo = self.get_photo(place_id)
         self.save()
 
 
