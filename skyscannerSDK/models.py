@@ -35,6 +35,8 @@ class Place(models.Model):
     name = models.CharField(max_length=200)
     type = models.ForeignKey(PlaceType)
     parentId = models.IntegerField(default=1)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
 
     def __unicode__(self):
         return self.code + ": " + self.name + ' (' + self.type.__unicode__() + ')'
@@ -48,8 +50,15 @@ class Place(models.Model):
         return Place.objects.filter(name=' '.join(self.name.split()[:2]), type__name='City').first()
 
     def get_coordinates(self):
-        return requests.post('https://maps.googleapis.com/maps/api/geocode/json?address='+self.name.replace(' ', '+')+'&key='+settings.GOOGLE_API_KEY)
+        r = requests.post('https://maps.googleapis.com/maps/api/geocode/json?address='+self.name.replace(' ', '+')+'&key='+settings.GOOGLE_API_KEY)
+        coordinates = r.json()['results'][0]['geometry']['location']
+        return coordinates
 
+    def update_coordinates(self):
+        coordinates = self.get_coordinates()
+        self.latitude = coordinates['lat']
+        self.longitude = coordinates['lng']
+        self.save()
 
 
 class Carrier(models.Model):
