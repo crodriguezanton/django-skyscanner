@@ -2,11 +2,14 @@ import urllib
 import uuid
 
 import cStringIO
+
+import requests
 from django.db import models
 from django.db.models import Min, Avg
 from django.utils.translation import ugettext as _
 from django_extensions.db.models import TimeStampedModel
 from PIL import Image
+from django.conf import settings
 
 from constants import DIRECTIONALITY_CHOICES
 
@@ -43,6 +46,10 @@ class Place(models.Model):
         if places.count() == 1:
             return places.first()
         return Place.objects.filter(name=' '.join(self.name.split()[:2]), type__name='City').first()
+
+    def get_coordinates(self):
+        return requests.post('https://maps.googleapis.com/maps/api/geocode/json?address='+self.name.replace(' ', '+')+'&key='+settings.GOOGLE_API_KEY)
+
 
 
 class Carrier(models.Model):
