@@ -1,1 +1,1 @@
-#Django Skyscanner SDK (Work in Progress)
+# Django Skyscanner API (Work in Progress)
